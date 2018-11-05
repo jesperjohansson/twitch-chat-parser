@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/jesperjohansson/twitch-chat-parser/issues"
   },
-  "homepage": "https://github.com/jesperjohansson/twitch-chat-parser#readme"
+  "homepage": "https://github.com/jesperjohansson/twitch-chat-parser#readme",
+  "devDependencies": {
+    "prettier": "^1.14.3",
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.11.0",
+    "tslint-config-prettier": "^1.15.0",
+    "typescript": "^3.1.6"
+  }
 }
