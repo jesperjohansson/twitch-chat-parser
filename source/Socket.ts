@@ -19,6 +19,13 @@ export default class Socket extends SocketEmitter {
   private authenticator: Authenticator
   private options: SocketOptions
 
+  static isPingMessage(data: string) {
+    return data === Socket.PingMsg
+  }
+
+  static PingMsg = 'PING :tmi.twitch.tv'
+  static PongMsg = 'PONG :tmi.twitch.tv'
+
   constructor(
     authenticator: Authenticator,
     options: SocketOptions = defaultOptions,
@@ -45,14 +52,19 @@ export default class Socket extends SocketEmitter {
   }
 
   handleIncomingData = (data: any) => {
-    // TODO: Check if its a chat message
-    console.log('incoming data:', data)
+    console.log('[DEBUG] Receiving:', data)
+
+    if (Socket.isPingMessage(data)) {
+      this.send(Socket.PongMsg)
+    }
+
     if (Chat.isChatMessage(data)) {
       this.emit(SocketEvent.MESSAGE, data)
     }
   }
 
   send(data: string) {
+    console.log('[DEBUG] Sending:', data)
     return new Promise((resolve, reject) => {
       this.client.send(data, err => {
         if (err) return reject(err)

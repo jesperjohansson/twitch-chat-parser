@@ -7,7 +7,7 @@ export default class Chat extends Parser {
   channel: string
 
   static isChatMessage(data: string) {
-    return typeof data === 'string' && data.includes('PRIVMSG')
+    return data.includes('PRIVMSG')
   }
 
   constructor(socket: Socket) {
