@@ -2,6 +2,7 @@ import WebSocket from 'ws'
 import SocketEmitter from './SocketEmitter'
 import { WEBSOCKET_URL, SocketEvent } from './consts'
 import Authenticator from './Authenticator'
+import Chat from './Chat'
 
 interface SocketOptions {
   secure: Boolean
@@ -25,25 +26,45 @@ export default class Socket extends SocketEmitter {
     super()
     this.authenticator = authenticator
     this.options = options
+  }
 
-    const port: Number = options.secure ? 443 : 80
-    this.client = new WebSocket(`${WEBSOCKET_URL}:${port}`)
-
-    this.addClientListeners()
+  async init() {
+    return new Promise(resolve => {
+      const port: Number = this.options.secure ? 443 : 80
+      this.client = new WebSocket(`${WEBSOCKET_URL}:${port}`)
+      this.client.once('open', () => {
+        this.addClientListeners()
+        resolve()
+      })
+    })
   }
 
   addClientListeners() {
-    this.client.once('open', this.handleFirstConnection)
-    this.client.on('message', data => console.log(data))
+    this.client.on('open', () => this.emit(SocketEvent.OPEN))
+    this.client.on('message', this.handleIncomingData)
   }
 
-  handleFirstConnection = () => {
-    if (this.options.authenticate) {
-      const { username, password } = this.authenticator.getCredentials()
-      this.client.send(`PASS ${password}`)
-      this.client.send(`NICK ${username}`)
+  handleIncomingData = (data: any) => {
+    // TODO: Check if its a chat message
+    console.log('incoming data:', data)
+    if (Chat.isChatMessage(data)) {
+      this.emit(SocketEvent.MESSAGE, data)
     }
+  }
 
-    this.client.on('open', () => this.emit(SocketEvent.OPEN))
+  send(data: string) {
+    return new Promise((resolve, reject) => {
+      this.client.send(data, err => {
+        if (err) return reject(err)
+        return resolve()
+      })
+    })
+  }
+
+  async connect() {
+    const { username, password } = this.authenticator.getCredentials()
+    await this.init()
+    await this.send(`PASS ${password}`)
+    await this.send(`NICK ${username}`)
   }
 }

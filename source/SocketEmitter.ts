@@ -5,7 +5,7 @@ interface SocketListeners {
 }
 
 interface SocketEventListener {
-  (): void
+  (data?: any): void
 }
 
 export default class SocketEmitter {
@@ -19,7 +19,9 @@ export default class SocketEmitter {
     this.listeners[event].push(listener)
   }
 
-  emit(event: SocketEvent) {
-    this.listeners[event].forEach(listener => listener())
+  emit(event: SocketEvent, data?: any) {
+    this.listeners[event].forEach((listener: SocketEventListener) =>
+      listener(data),
+    )
   }
 }
