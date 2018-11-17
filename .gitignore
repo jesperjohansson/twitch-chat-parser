@@ -1,3 +1,9 @@
+# Demo
+demo/
+
+# Dist
+dist/
+
 # System
 .DS_Store
 

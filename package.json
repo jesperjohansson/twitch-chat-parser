@@ -4,7 +4,10 @@
   "description": "Twitch Chat Parser",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npm run ts:watch",
+    "ts:watch": "tsc -w",
+    "node:run": "node demo/index.js"
   },
   "repository": {
     "type": "git",
@@ -17,10 +20,15 @@
   },
   "homepage": "https://github.com/jesperjohansson/twitch-chat-parser#readme",
   "devDependencies": {
+    "@types/node": "^10.12.2",
+    "@types/ws": "^6.0.1",
     "prettier": "^1.14.3",
     "tslint": "^5.11.0",
     "tslint-config-airbnb": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
     "typescript": "^3.1.6"
+  },
+  "dependencies": {
+    "ws": "^6.1.0"
   }
 }
