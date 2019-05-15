@@ -20,7 +20,7 @@ export default class Socket extends SocketEmitter {
   private options: SocketOptions
 
   static isPingMessage(data: string) {
-    return data === Socket.PingMsg
+    return data.includes(Socket.PingMsg)
   }
 
   static PingMsg = 'PING :tmi.twitch.tv'
@@ -56,6 +56,7 @@ export default class Socket extends SocketEmitter {
 
     if (Socket.isPingMessage(data)) {
       this.send(Socket.PongMsg)
+      console.log(data, Socket.PingMsg, data.length, Socket.PingMsg.length)
     }
 
     if (Chat.isChatMessage(data)) {
